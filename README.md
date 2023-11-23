@@ -26,7 +26,7 @@ $ npm run db:start:local_server
 ```bash
 $ cd client
 $ npn install
-$ npm run db:start:local_server 
+$ npm run start:local_server 
 ```
 
 ## URLS
