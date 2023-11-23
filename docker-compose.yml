@@ -1,0 +1,83 @@
+version: '3.8'
+
+x-common: &common_variables
+  target_var: &target_var local  #// local || dev || prod
+  project_name: &project_name my_project    #// do not forget to change to ./server/.env.*
+  postgres_container: &postgres_container my_project_postgres_container  #// do not forget to change to the correct name of the project
+  server_container: &server_container my_project_server_container
+  client_container: &client_container my_project_client_container
+  nginx_container: &nginx_container my_project_nginx_container
+
+services:
+  database:
+    container_name: *postgres_container
+    image: postgres
+    restart: always
+    env_file:
+      - default.env
+    environment:
+      POSTGRES_USER: nginx_user
+      POSTGRES_PASSWORD: magical_password
+      POSTGRES_DB: nginx_database
+    ports:
+      - "5437:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+    networks:
+      - network
+
+  server:
+    container_name: *server_container
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: *target_var
+    depends_on:
+      - database
+    ports:
+      - "4000:3000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    networks:
+      - network
+
+  client:
+    container_name: *client_container
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: *target_var
+    environment:
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - server
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    networks:
+      - network
+
+  nginx:
+    container_name: *nginx_container
+    env_file:
+      - default.env
+    depends_on:
+      - server
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: "./nginx"
+    ports:
+      - "8816:80"
+    networks:
+      - network
+
+volumes:
+  pg_data:
+    driver: local
+
+networks:
+  network:
+    driver: bridge

@@ -1,0 +1,14 @@
+{
+  "name": "Cashbulls",
+  "author": "first_name: Yurii , last_name: Kalnytskyi, email:yra6920@gmail.com",
+  "description": "Test task from Cashbulls",
+  "scripts": {
+    "start": " docker-compose up -d && npm run db:start:local --prefix server"
+  },
+  "files": [
+    "*"
+  ],
+  "private": "true",
+  "devDependencies": {
+  }
+}
