@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  local_database_postgres:
+    container_name: my_project_postgres_container
+    image: 'postgres'
+    environment:
+      POSTGRES_USER: nginx_user
+      POSTGRES_PASSWORD: magical_password
+      POSTGRES_DB: nginx_database
+    ports:
+      - '5437:5432'
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+
+#  mongodb:
+#    image: mongo
+#    container_name: my_mongodb
+#    ports:
+#      - "27017:27017"
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: root
+#      MONGO_INITDB_ROOT_PASSWORD: examplepassword
+#      MONGO_DB_NAME: your_database_name
+#    volumes:
+#      - mongodb_data:/data/db
+
+volumes:
+  pg_data:
+#  mongodb_data:
+
